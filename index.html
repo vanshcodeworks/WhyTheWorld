@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why the World Works — A Curious Beginner's Book of Physics</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#f6f1e5;
+    --paper-2:#fffdf7;
+    --paper-3:#fbf7ed;
+    --ink:#1b2a36;
+    --ink-soft:#42566a;
+    --blue:#143a57;
+    --blue-bright:#1f6e9c;
+    --rust:#a8431f;
+    --rust-soft:#c2683e;
+    --gold:#b7892d;
+    --line:#d8cfb6;
+    --line-soft:#e7dfca;
+    --story-bg:#f4eede;
+    --story-edge:#b7892d;
+    --real-bg:#eaf2ee;
+    --real-edge:#2f8a5b;
+    --deriv-bg:#fffdf7;
+    --result-bg:#e9f1f4;
+    --result-edge:#1f6e9c;
+    --shadow:rgba(27,42,54,.10);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(183,137,45,.05), transparent 38%),
+      radial-gradient(circle at 88% 70%, rgba(31,110,156,.05), transparent 42%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:auto,auto,27px 27px,27px 27px;
+    color:var(--ink);
+    font-family:"Newsreader", Georgia, serif;
+    font-size:18px; line-height:1.74;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- TOP CONTROL BAR ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,241,229,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .row{
+    max-width:1240px; margin:0 auto;
+    display:flex; align-items:center; gap:16px;
+    padding:10px 22px; flex-wrap:wrap;
+  }
+  .brand{
+    font-family:"Fraunces",serif; font-weight:900;
+    color:var(--blue); font-size:1.05rem; letter-spacing:-.01em;
+    white-space:nowrap;
+  }
+  .brand span{color:var(--rust);}
+  .controls{display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap;}
+  .search{
+    display:flex; align-items:center; gap:7px;
+    background:var(--paper-2); border:1px solid var(--line);
+    border-radius:20px; padding:5px 13px;
+  }
+  .search input{
+    border:none; background:transparent; outline:none;
+    font-family:"Spline Sans Mono",monospace; font-size:.8rem;
+    color:var(--ink); width:140px;
+  }
+  .search svg{flex:none;}
+  .depth{
+    display:flex; align-items:center;
+    background:var(--paper-2); border:1px solid var(--line);
+    border-radius:20px; padding:3px; gap:2px;
+  }
+  .depth button{
+    font-family:"Spline Sans Mono",monospace; font-size:.7rem;
+    letter-spacing:.04em; text-transform:uppercase;
+    border:none; background:transparent; color:var(--ink-soft);
+    padding:5px 11px; border-radius:16px; cursor:pointer;
+    transition:all .15s ease; white-space:nowrap;
+  }
+  .depth button.active{background:var(--blue); color:var(--paper-2);}
+  .depth button:hover:not(.active){color:var(--blue);}
+  .progress{height:3px; background:transparent;}
+  .progress .bar{height:100%; width:0%; background:linear-gradient(90deg,var(--rust),var(--gold),var(--blue-bright)); transition:width .1s linear;}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{
+    max-width:1240px; margin:0 auto;
+    padding:0 22px 140px;
+    display:grid; grid-template-columns:262px 1fr; gap:50px;
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    grid-column:1 / -1; text-align:center;
+    padding:80px 18px 54px;
+    border-bottom:3px double var(--blue);
+    margin-bottom:8px;
+  }
+  .hero .kicker{
+    font-family:"Spline Sans Mono",monospace;
+    letter-spacing:.42em; text-transform:uppercase;
+    font-size:.72rem; color:var(--rust); margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:"Fraunces",serif; font-weight:900;
+    font-size:clamp(2.6rem,6.5vw,5.2rem); line-height:1.0;
+    margin:0 0 18px; color:var(--blue); letter-spacing:-.02em;
+  }
+  .hero h1 em{font-style:italic; color:var(--rust); font-weight:600;}
+  .hero p.sub{
+    max-width:680px; margin:0 auto; font-size:1.22rem;
+    color:var(--ink-soft); font-style:italic;
+  }
+  .hero .meta{
+    margin-top:28px; font-family:"Spline Sans Mono",monospace;
+    font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  .hero .meta b{color:var(--blue); font-weight:600;}
+
+  /* ---------- TOC ---------- */
+  nav.toc{align-self:start; position:sticky; top:74px; font-family:"Spline Sans Mono",monospace; font-size:.78rem; max-height:calc(100vh - 96px); overflow-y:auto; padding-right:6px;}
+  nav.toc .part{
+    font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--rust); font-size:.66rem; margin:20px 0 8px; padding-bottom:6px;
+    border-bottom:1px solid var(--line);
+  }
+  nav.toc .part:first-child{margin-top:0;}
+  nav.toc a{
+    display:flex; gap:9px; text-decoration:none; color:var(--ink-soft);
+    padding:5px 9px; border-radius:6px; transition:all .15s ease; align-items:baseline; line-height:1.35;
+  }
+  nav.toc a:hover{background:var(--paper-2); color:var(--blue);}
+  nav.toc a.active{background:var(--blue); color:var(--paper-2);}
+  nav.toc a.active .n{color:var(--gold);}
+  nav.toc a .n{color:var(--blue-bright); font-weight:600; min-width:20px;}
+
+  /* ---------- MAIN ---------- */
+  main{min-width:0;}
+
+  .howto{
+    background:var(--paper-2); border:1px solid var(--line);
+    border-left:5px solid var(--rust); border-radius:10px;
+    padding:26px 30px; margin:14px 0 56px; box-shadow:0 2px 16px var(--shadow);
+  }
+  .howto h3{font-family:"Fraunces",serif; margin:0 0 10px; color:var(--blue); font-size:1.4rem;}
+  .howto p{margin:0 0 12px; color:var(--ink-soft); font-size:1.04rem;}
+  .howto .keyrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px;}
+  .howto .key{
+    display:flex; align-items:center; gap:8px;
+    background:var(--paper-3); border:1px solid var(--line);
+    border-radius:8px; padding:8px 12px; font-size:.92rem; color:var(--ink-soft);
+  }
+  .howto .key b{font-family:"Spline Sans Mono",monospace; color:var(--blue);}
+
+  /* PART divider */
+  .partbreak{margin:18px 0 30px; text-align:center;}
+  .partbreak .pno{
+    font-family:"Spline Sans Mono",monospace; font-size:.72rem; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--rust);
+  }
+  .partbreak h2{
+    font-family:"Fraunces",serif; font-weight:900; font-style:italic;
+    font-size:clamp(1.7rem,3.4vw,2.4rem); color:var(--blue); margin:6px 0 0; letter-spacing:-.01em;
+  }
+  .partbreak .rule{height:2px; width:80px; margin:14px auto 0; background:var(--gold);}
+
+  /* CHAPTER */
+  section.chapter{margin-bottom:46px; scroll-margin-top:80px;}
+  .chap-head{display:flex; align-items:flex-start; gap:16px; margin-bottom:14px;}
+  .chap-head .badge{
+    flex:none; width:50px; height:50px; display:grid; place-items:center;
+    background:var(--blue); color:var(--paper-2);
+    font-family:"Fraunces",serif; font-weight:900; font-size:1.5rem; border-radius:50%;
+    box-shadow:0 3px 10px var(--shadow);
+  }
+  .chap-head h3{
+    font-family:"Fraunces",serif; font-weight:600; font-size:2rem;
+    margin:2px 0 0; color:var(--blue); letter-spacing:-.012em; line-height:1.08;
+  }
+  .chap-head .ch-kicker{
+    font-family:"Spline Sans Mono",monospace; font-size:.66rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--rust); display:block; margin-bottom:3px;
+  }
+  .chap-intro{
+    font-size:1.08rem; color:var(--ink-soft); margin:0 0 22px;
+    padding-left:66px;
+  }
+  .chap-intro em{color:var(--rust); font-style:italic;}
+
+  /* CONCEPT CARD */
+  .concept{
+    background:var(--paper-2); border:1px solid var(--line);
+    border-radius:12px; margin-bottom:26px; overflow:hidden;
+    box-shadow:0 2px 14px var(--shadow);
+  }
+  .concept > .head{
+    padding:20px 26px 16px; border-left:5px solid var(--blue-bright);
+  }
+  .concept > .head h4{
+    font-family:"Fraunces",serif; font-size:1.34rem; margin:0 0 4px; color:var(--ink);
+  }
+  .concept .formula-tag{
+    font-family:"Spline Sans Mono",monospace; color:var(--blue-bright);
+  }
+  .concept .lead{margin:8px 0 2px; color:var(--ink-soft); font-size:1.04rem;}
+
+  /* details panels */
+  details.panel{border-top:1px solid var(--line-soft);}
+  details.panel > summary{
+    list-style:none; cursor:pointer; user-select:none;
+    padding:13px 26px; display:flex; align-items:center; gap:11px;
+    font-family:"Spline Sans Mono",monospace; font-size:.74rem;
+    letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+    transition:background .15s ease;
+  }
+  details.panel > summary::-webkit-details-marker{display:none;}
+  details.panel > summary:hover{background:var(--paper-3);}
+  details.panel > summary .ico{
+    flex:none; width:24px; height:24px; border-radius:6px;
+    display:grid; place-items:center; font-size:.9rem;
+  }
+  details.panel > summary .chev{margin-left:auto; transition:transform .2s ease; opacity:.5; font-family:serif;}
+  details.panel[open] > summary .chev{transform:rotate(90deg);}
+  .panel .body{padding:2px 26px 22px; }
+  .panel .body p{margin:.5em 0;}
+
+  /* story panel */
+  details.story > summary{color:var(--gold);}
+  details.story > summary .ico{background:var(--story-bg); }
+  details.story .body{background:linear-gradient(180deg,var(--story-bg),transparent);}
+  details.story .who{
+    font-family:"Spline Sans Mono",monospace; font-size:.72rem; color:var(--gold);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+
+  /* derivation panel */
+  details.deriv > summary{color:var(--blue-bright);}
+  details.deriv > summary .ico{background:var(--result-bg);}
+  .step{display:grid; grid-template-columns:28px 1fr; gap:13px; margin-bottom:6px; align-items:start;}
+  .step .sn{
+    font-family:"Spline Sans Mono",monospace; font-weight:600; font-size:.78rem;
+    color:var(--paper-2); background:var(--rust-soft);
+    width:23px; height:23px; border-radius:50%; display:grid; place-items:center; margin-top:5px;
+  }
+  .step .sc{font-size:1.0rem;}
+  .step .sc p{margin:.3em 0;}
+  .eq{margin:5px 0 3px; overflow-x:auto; overflow-y:hidden; padding:2px 0;}
+  .result{
+    margin:16px 0 6px; background:var(--result-bg);
+    border:1px solid #c4dcdf; border-left:5px solid var(--result-edge);
+    border-radius:8px; padding:11px 20px;
+  }
+  .result .rl{
+    font-family:"Spline Sans Mono",monospace; font-size:.64rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--blue-bright); font-weight:600; display:block; margin-bottom:1px;
+  }
+  .stepnote{font-size:.92rem; color:var(--ink-soft); font-style:italic; border-top:1px dashed var(--line); padding-top:10px; margin-top:8px;}
+  .stepnote b{color:var(--rust); font-style:normal;}
+
+  /* real world panel */
+  details.real > summary{color:var(--real-edge);}
+  details.real > summary .ico{background:var(--real-bg);}
+  details.real .body ul{margin:.4em 0; padding-left:0; list-style:none;}
+  details.real .body li{
+    position:relative; padding-left:26px; margin:.55em 0;
+  }
+  details.real .body li::before{
+    content:"▸"; position:absolute; left:4px; top:0; color:var(--real-edge); font-size:.9rem;
+  }
+  details.real .body li b{color:var(--ink);}
+
+  /* curiosity spark */
+  .spark{
+    margin:0 26px 22px; background:#fdf6e3; border:1px dashed var(--gold);
+    border-radius:9px; padding:12px 18px; font-size:.98rem; color:var(--ink-soft);
+  }
+  .spark b{font-family:"Fraunces",serif; color:var(--rust); font-style:italic; font-weight:600;}
+
+  /* search no-results / hidden */
+  .concept.hidden, .chapter.hidden{display:none;}
+  .nomatch{display:none; text-align:center; color:var(--ink-soft); font-style:italic; padding:40px;}
+
+  /* back to top */
+  #toTop{
+    position:fixed; bottom:24px; right:24px; z-index:40;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--blue); color:var(--paper-2); border:none; cursor:pointer;
+    font-size:1.2rem; box-shadow:0 4px 14px rgba(0,0,0,.2);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  #toTop.show{opacity:1; pointer-events:auto;}
+
+  footer{
+    grid-column:1 / -1; text-align:center; margin-top:50px; padding-top:32px;
+    border-top:3px double var(--blue);
+    font-family:"Spline Sans Mono",monospace; font-size:.74rem; letter-spacing:.08em; color:var(--ink-soft); line-height:1.8;
+  }
+  footer b{color:var(--blue);}
+
+  @media (max-width:920px){
+    .wrap{grid-template-columns:1fr; gap:0;}
+    nav.toc{position:static; max-height:none; margin-bottom:40px; background:var(--paper-2); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+    .chap-intro{padding-left:0;}
+  }
+  @media (max-width:520px){
+    body{font-size:16.5px;}
+    .controls{width:100%; margin-left:0;}
+    .search input{width:100%;}
+    .search{flex:1;}
+    .concept > .head, .panel .body, details.panel > summary{padding-left:16px; padding-right:16px;}
+    .spark{margin-left:16px; margin-right:16px;}
+  }
+  @media print{
+    .topbar,#toTop,nav.toc{display:none;}
+    .wrap{display:block;}
+    details.panel{open:true;}
+    details.panel > summary .chev{display:none;}
+    .concept,.howto{box-shadow:none; break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="row">
+    <div class="brand">Why the World <span>Works</span></div>
+    <div class="controls">
+      <label class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#42566a" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="text" id="searchBox" placeholder="search topics…" autocomplete="off">
+      </label>
+      <div class="depth" role="group" aria-label="Reading depth">
+        <button data-depth="essentials">Essentials</button>
+        <button data-depth="curious" class="active">Curious</button>
+        <button data-depth="deep">Deep dive</button>
+      </div>
+    </div>
+  </div>
+  <div class="progress"><div class="bar" id="progBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">A Curious Beginner's Book of Physics</div>
+    <h1>Why the<br>World <em>Works</em></h1>
+    <p class="sub">The famous equations — where they came from, who dreamed them up, how they were torn out of nature, and where you meet them every single day.</p>
+    <div class="meta"><b>16 chapters</b> &nbsp;·&nbsp; stories + derivations + real life &nbsp;·&nbsp; <b>you choose the depth</b></div>
+  </header>
+
+  <!-- ===== NAV (populated to match chapters) ===== -->
+  <nav class="toc" id="toc" aria-label="Contents">
+    <div class="part">Part I · Motion</div>
+    <a href="#c1"><span class="n">01</span> The Equations of Motion</a>
+    <a href="#c2"><span class="n">02</span> Projectiles &amp; Flight</a>
+    <div class="part">Part II · Forces &amp; Energy</div>
+    <a href="#c3"><span class="n">03</span> Force &amp; Momentum</a>
+    <a href="#c4"><span class="n">04</span> Energy &amp; Power</a>
+    <a href="#c5"><span class="n">05</span> Going in Circles</a>
+    <a href="#c6"><span class="n">06</span> Gravity &amp; the Heavens</a>
+    <a href="#c7"><span class="n">07</span> Spin &amp; Rotation</a>
+    <a href="#c8"><span class="n">08</span> Fluids &amp; Flight</a>
+    <div class="part">Part III · Vibrations &amp; Waves</div>
+    <a href="#c9"><span class="n">09</span> Swings &amp; Springs</a>
+    <a href="#c10"><span class="n">10</span> Waves &amp; Sound</a>
+    <div class="part">Part IV · Heat &amp; Matter</div>
+    <a href="#c11"><span class="n">11</span> Heat &amp; the Restless Atom</a>
+    <a href="#c12"><span class="n">12</span> The Laws of Heat</a>
+    <div class="part">Part V · Electricity &amp; Magnetism</div>
+    <a href="#c13"><span class="n">13</span> Electric Currents</a>
+    <a href="#c14"><span class="n">14</span> Magnetism &amp; Induction</a>
+    <div class="part">Part VI · Light &amp; the Modern World</div>
+    <a href="#c15"><span class="n">15</span> Light &amp; Optics</a>
+    <a href="#c16"><span class="n">16</span> The Quantum &amp; Relativity</a>
+  </nav>
+
+  <main id="main">
+
+    <div class="howto">
+      <h3>How to read this book</h3>
+      <p>Physics isn't a pile of formulas to memorize — it's humanity's running detective story about how reality behaves. Every equation here was once a <em>mystery</em> that a real, stubborn, often eccentric person cracked. So each idea comes in layers, and <em>you decide how deep to dig.</em></p>
+      <p>Use the <b>Essentials / Curious / Deep dive</b> switch at the top. <b>Essentials</b> shows just the headline idea and formula. <b>Curious</b> adds the human story and the real-world uses. <b>Deep dive</b> opens the full step-by-step derivation too. You can also open any single panel by clicking it, or search for a topic.</p>
+      <div class="keyrow">
+        <div class="key">📜 <span><b>The story</b> — who found it &amp; how</span></div>
+        <div class="key">✏️ <span><b>The derivation</b> — built step by step</span></div>
+        <div class="key">🌍 <span><b>In the real world</b> — where you meet it</span></div>
+        <div class="key">✦ <span><b>Curiosity spark</b> — a thing to wonder about</span></div>
+      </div>
+    </div>
+
+    <div class="partbreak"><div class="pno">Part One</div><h2>Motion</h2><div class="rule"></div></div>
+
+    <!-- ============ CH1 ============ -->
+    <section class="chapter" id="c1">
+      <div class="chap-head"><div class="badge">1</div><div><span class="ch-kicker">Part I · Motion</span><h3>The Equations of Motion</h3></div></div>
+      <p class="chap-intro">For thousands of years, "common sense" said heavier things fall faster and that a moving object naturally slows to a stop. Both are <em>wrong</em>. The first person to replace opinion with measurement — rolling balls down ramps and timing them with his own pulse — kicked off all of modern science. These three little equations are the result.</p>
+
+      <div class="concept">
+        <div class="head"><h4>First equation · <span class="formula-tag">\(v = u + at\)</span></h4>
+        <p class="lead">If something speeds up steadily, its final speed is just the start speed plus "how hard it accelerated" times "for how long."</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Galileo Galilei · Italy · early 1600s</p>
+          <p>There were no stopwatches. So Galileo slowed motion down by rolling bronze balls down a gently tilted groove, timing them by weighing the water that drained from a vessel during the roll. He discovered that the speed grew in equal steps with equal times — the very definition of constant acceleration. The Church put him under house arrest for unrelated reasons, but this quiet ramp experiment had already cracked the universe open.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Acceleration <em>means</em> how much velocity changes each second — the change divided by the time:</p><div class="eq">\[ a = \frac{v - u}{t} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Multiply both sides by \(t\):</p><div class="eq">\[ at = v - u \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Add \(u\) to both sides:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ v = u + at \]</div></div>
+          <div class="stepnote">It's literally the definition of acceleration, rearranged — nothing more.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Your car's 0–60 time.</b> A "0–60 mph in 5 seconds" rating is exactly this equation in disguise.</li>
+          <li><b>Anti-lock brakes &amp; airbags.</b> A car's safety computer predicts your speed milliseconds ahead using \(v=u+at\) to decide when to fire.</li>
+          <li><b>Rockets and lifts.</b> Engineers cap acceleration so humans aren't crushed — this sets how long the burn must last.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> Drop a hammer and a feather on the Moon (astronauts actually did this in 1971) and they land together — because with no air, every object accelerates at exactly the same \(a\). Galileo was right all along.</div>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Second equation · <span class="formula-tag">\(s = ut + \tfrac12 at^2\)</span></h4>
+        <p class="lead">The distance covered is the steady part \((ut)\) plus an extra bit that grows with the <em>square</em> of time as you keep speeding up.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Galileo · the "odd-numbers" rule</p>
+          <p>Galileo noticed something magical on his ramps: in successive equal time-slices a falling ball covers distances in the ratio 1 : 3 : 5 : 7… Add those up and the totals go 1, 4, 9, 16 — perfect squares. That "distance grows as time squared" is the heartbeat of this formula.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>With steady acceleration, average velocity is the midpoint of start and end:</p><div class="eq">\[ v_{\text{avg}} = \frac{u+v}{2} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Distance = average velocity × time:</p><div class="eq">\[ s = \frac{u+v}{2}\,t \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Substitute \(v = u+at\):</p><div class="eq">\[ s = \frac{u+(u+at)}{2}\,t = \frac{2u+at}{2}\,t \]</div></div></div>
+          <div class="step"><div class="sn">4</div><div class="sc"><p>Split the fraction:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ s = ut + \tfrac12 at^2 \]</div></div>
+          <div class="stepnote">On a velocity–time graph this is the <b>area underneath</b>: a rectangle plus a triangle.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Stopping distances.</b> Why your driving test warns that doubling speed <em>quadruples</em> braking distance — that's the \(t^2\) at work.</li>
+          <li><b>Falling-object safety.</b> Construction nets and crumple zones are sized from how far things fall in a given time.</li>
+          <li><b>Camera-based speed traps.</b> Two photos, a known time gap, and this equation give your speed.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Third equation · <span class="formula-tag">\(v^2 = u^2 + 2as\)</span></h4>
+        <p class="lead">A shortcut linking speeds and distance directly — when you don't know (or care about) the time.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>From the first equation, \(t = \dfrac{v-u}{a}\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Put it into \(s = \dfrac{u+v}{2}\,t\):</p><div class="eq">\[ s = \frac{u+v}{2}\cdot\frac{v-u}{a} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>The top is a difference of squares, \((v+u)(v-u)=v^2-u^2\):</p><div class="eq">\[ s = \frac{v^2-u^2}{2a} \]</div></div></div>
+          <div class="step"><div class="sn">4</div><div class="sc"><p>Rearrange:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ v^2 = u^2 + 2as \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Runway length.</b> Pilots compute the exact tarmac needed to reach take-off speed using this.</li>
+          <li><b>Roller-coaster design.</b> The speed at the bottom of a drop, from the height alone.</li>
+          <li><b>Forensics.</b> Skid-mark length on a road reveals how fast a car was going before braking.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH2 ============ -->
+    <section class="chapter" id="c2">
+      <div class="chap-head"><div class="badge">2</div><div><span class="ch-kicker">Part I · Motion</span><h3>Projectiles &amp; the Art of the Throw</h3></div></div>
+      <p class="chap-intro">Galileo's second great insight: a thrown object is doing <em>two</em> things at once — coasting sideways at a steady speed while gravity pulls it down. Split them apart, solve each separately, and the graceful curving arc of every basketball, cannonball, and water fountain becomes simple arithmetic.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Time of flight · <span class="formula-tag">\(T = \dfrac{2u\sin\theta}{g}\)</span></h4>
+        <p class="lead">How long it hangs in the air depends only on the <em>upward</em> part of the launch.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Galileo · and Renaissance gunners</p>
+          <p>Cannon crews had tables of "how far for which angle," found purely by trial and bloody error. Galileo gave them the <em>why</em>: the curve is a parabola, and horizontal and vertical motion are independent. Drop a bullet and fire one horizontally at the same instant — both hit the ground together. That counter-intuitive fact is the whole chapter.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Split the launch: upward part \(u\sin\theta\), sideways part \(u\cos\theta\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Vertically it returns to the same height, so vertical displacement is zero:</p><div class="eq">\[ 0 = u\sin\theta\,t - \tfrac12 g t^2 \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Factor out \(t\) and drop the trivial \(t=0\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ T = \frac{2u\sin\theta}{g} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Sports.</b> A goalkeeper's punt, a golfer's loft, a long-jumper's take-off — all tuned for hang time.</li>
+          <li><b>Fireworks.</b> Fuses are timed so shells burst at the top of the arc, where they hang longest.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Maximum height · <span class="formula-tag">\(H = \dfrac{u^2\sin^2\theta}{2g}\)</span></h4>
+        <p class="lead">How high it climbs before gravity wins and it starts falling.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>At the top the upward speed is momentarily zero. Use \(v^2=u_y^2-2gH\) with final speed 0:</p><div class="eq">\[ 0 = (u\sin\theta)^2 - 2gH \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Solve for \(H\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ H = \frac{u^2\sin^2\theta}{2g} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Fountains &amp; sprinklers.</b> Nozzle pressure is set to reach a target height.</li>
+          <li><b>Volleyball &amp; basketball.</b> Players intuitively solve this every time they arc a shot over a defender.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Range · <span class="formula-tag">\(R = \dfrac{u^2\sin 2\theta}{g}\)</span></h4>
+        <p class="lead">How far it travels — and the reason 45° throws the farthest.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Sideways speed is constant, so range = sideways speed × flight time:</p><div class="eq">\[ R = u\cos\theta \times \frac{2u\sin\theta}{g} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Use the identity \(2\sin\theta\cos\theta=\sin 2\theta\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ R = \frac{u^2\sin 2\theta}{g} \]</div></div>
+          <div class="stepnote">\(\sin 2\theta\) maxes out at \(2\theta = 90^\circ\), i.e. <b>\(\theta = 45^\circ\)</b>.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Shot put &amp; javelin.</b> Athletes release a touch below 45° because they launch from shoulder height, not the ground.</li>
+          <li><b>Artillery &amp; ballistics.</b> The original reason this maths was funded for centuries.</li>
+          <li><b>Water-jet cutting &amp; irrigation.</b> Reach is optimised with the same rule.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> Newton imagined firing a cannon so fast the ground curves away beneath the ball as fast as it falls — so it never lands. That "projectile that keeps missing the Earth" <em>is</em> an orbit. A thrown stone and the Moon obey the same equation.</div>
+      </div>
+    </section>
+
+    <div class="partbreak"><div class="pno">Part Two</div><h2>Forces &amp; Energy</h2><div class="rule"></div></div>
+
+    <!-- ============ CH3 ============ -->
+    <section class="chapter" id="c3">
+      <div class="chap-head"><div class="badge">3</div><div><span class="ch-kicker">Part II · Forces &amp; Energy</span><h3>Force &amp; Momentum</h3></div></div>
+      <p class="chap-intro">In 1665 a plague shut the universities, and a 23-year-old went home to the countryside for two years. Alone, Isaac Newton invented calculus, split white light, and worked out the laws of motion and gravity. He later called it his "year of wonders." Almost everything in this chapter was born in that quiet, locked-down farmhouse.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Newton's second law · <span class="formula-tag">\(F = ma\)</span></h4>
+        <p class="lead">Push something: the harder you push, the faster it speeds up — and heavier things are stubborner.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Isaac Newton · England · 1687, the <em>Principia</em></p>
+          <p>Newton didn't actually write "\(F=ma\)." His real law spoke of <em>momentum</em> — the "quantity of motion" — and said force changes it. That deeper version still works when mass changes, like a rocket burning fuel. Newton was secretive, vengeful in feuds, and obsessed with alchemy — yet he gave us the rulebook the universe had been using all along.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Newton's true statement: force is the rate of change of momentum \(p=mv\):</p><div class="eq">\[ F = \frac{\Delta(mv)}{\Delta t} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>If mass is constant, only velocity changes:</p><div class="eq">\[ F = m\,\frac{\Delta v}{\Delta t} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>And \(\dfrac{\Delta v}{\Delta t}\) is exactly acceleration:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ F = ma \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Everything you build.</b> Bridges, cranes, elevators, robot arms — all sized with \(F=ma\).</li>
+          <li><b>Rockets.</b> The momentum form explains thrust: throw mass backwards fast, get pushed forwards.</li>
+          <li><b>Crash safety.</b> Heavier cars need more force to stop — central to vehicle design and ratings.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Impulse · <span class="formula-tag">\(F\,t = \Delta p\)</span></h4>
+        <p class="lead">A small force over a long time can change motion as much as a big force over an instant.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Start from \(F=\dfrac{\Delta p}{\Delta t}\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Multiply both sides by the time \(\Delta t\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ F\,\Delta t = \Delta p = mv - mu \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Airbags &amp; crumple zones.</b> They stretch out the stopping <em>time</em>, slashing the force on your body.</li>
+          <li><b>Catching an egg.</b> You move your hands back — more time, less force, no mess.</li>
+          <li><b>Boxing &amp; martial arts.</b> "Rolling with a punch" lengthens contact time to soften the blow.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Conservation of momentum · <span class="formula-tag">\(\sum p = \text{const}\)</span></h4>
+        <p class="lead">In any collision or explosion, the total "quantity of motion" before equals the total after.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>By Newton's third law, A pushes B exactly as hard as B pushes A, oppositely: \(F_{AB}=-F_{BA}\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>They're in contact the same time, so their momentum changes are equal and opposite: \(\Delta p_B = -\Delta p_A\).</p></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>One gains what the other loses — total change is zero:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ m_Au_A+m_Bu_B = m_Av_A+m_Bv_B \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Rockets in empty space.</b> With nothing to push against, they throw exhaust one way to go the other. This is how we reach the planets.</li>
+          <li><b>Newton's cradle &amp; billiards.</b> The click-clack of transferred momentum.</li>
+          <li><b>Recoil.</b> Why a fired gun kicks back and a squid jets forward.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH4 ============ -->
+    <section class="chapter" id="c4">
+      <div class="chap-head"><div class="badge">4</div><div><span class="ch-kicker">Part II · Forces &amp; Energy</span><h3>Energy &amp; Power</h3></div></div>
+      <p class="chap-intro">"Energy" feels obvious now, but it took a century of argument to pin down. A brewer's son measuring the warmth of churning water, and a brilliant marquise translating Newton by candlelight, helped prove that energy is never created or destroyed — only passed around in disguise.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Kinetic energy · <span class="formula-tag">\(E_k = \tfrac12 mv^2\)</span></h4>
+        <p class="lead">The energy of motion — and notice it depends on speed <em>squared</em>, so going twice as fast carries four times the punch.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Émilie du Châtelet · France · 1740s</p>
+          <p>Most scholars thought "energy of motion" went as \(mv\). Émilie du Châtelet — a French mathematician who dropped weights into clay to measure the dents — showed the dent depth (the real effect) scaled with \(mv^2\), not \(mv\). She was right, and her insight survives in the \(v^2\). She translated Newton into French while pregnant at 42, and finished days before she died.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Work done by a force over a distance becomes energy of motion: \(W=Fs\), and \(F=ma\):</p><div class="eq">\[ W = ma\,s \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Starting from rest, \(v^2=2as\), so \(as=\tfrac12 v^2\):</p><div class="eq">\[ W = m\left(\tfrac12 v^2\right) \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>That stored work is the kinetic energy:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ E_k = \tfrac12 mv^2 \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Speed limits save lives.</b> The \(v^2\) is why a crash at 60 is far more than twice as deadly as at 30.</li>
+          <li><b>Wind turbines.</b> Power scales with wind speed cubed — a windy day is gold.</li>
+          <li><b>Hydroelectric dams.</b> Falling water's kinetic energy spins generators.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Potential energy · <span class="formula-tag">\(E_p = mgh\)</span></h4>
+        <p class="lead">Energy stored simply by being up high, ready to be released by falling.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>To lift slowly you push up against gravity with force \(mg\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Work = force × height lifted:</p><div class="eq">\[ W = (mg)\,h \]</div></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ E_p = mgh \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Pumped-storage power.</b> Grids pump water uphill when power is cheap, release it when demand spikes — the world's biggest "battery."</li>
+          <li><b>Roller coasters.</b> The first big climb stores all the energy the rest of the ride spends.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Power · <span class="formula-tag">\(P = Fv\)</span></h4>
+        <p class="lead">Power is how <em>fast</em> you deliver energy — the difference between a sprint and a stroll up the same hill.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Power is work per unit time, and work is \(Fs\):</p><div class="eq">\[ P = \frac{Fs}{t} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>And \(\dfrac{s}{t}\) is the speed \(v\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ P = Fv \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>"Horsepower."</b> James Watt coined it to sell steam engines by comparing them to horses.</li>
+          <li><b>Your electricity bill.</b> Charged in kilowatt-hours — power multiplied by time.</li>
+          <li><b>Cycling &amp; fitness.</b> Smart trainers report your power output in watts in real time.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH5 ============ -->
+    <section class="chapter" id="c5">
+      <div class="chap-head"><div class="badge">5</div><div><span class="ch-kicker">Part II · Forces &amp; Energy</span><h3>Going in Circles</h3></div></div>
+      <p class="chap-intro">Here's a brain-bender: an object whirling at perfectly steady speed is still <em>accelerating</em> — because its direction keeps changing, and velocity is about direction too. Something must constantly yank it toward the centre, or it flies off in a straight line. That inward pull rules everything from a hammer throw to a satellite.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Centripetal acceleration · <span class="formula-tag">\(a = \dfrac{v^2}{r}\)</span></h4>
+        <p class="lead">To keep curving, you need an inward acceleration that grows fiercely with speed and bites harder on tight turns.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Christiaan Huygens · Netherlands · 1659</p>
+          <p>Huygens — the same genius who built the first pendulum clock and spotted Saturn's rings — was first to nail the "centre-seeking" force mathematically. The word <em>centripetal</em> (Latin for "centre-seeking") was later coined by Newton, who used Huygens' result to prove the Moon is simply falling around the Earth.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>In a short time \(\Delta t\) the object sweeps a small angle \(\Delta\theta = \dfrac{v\,\Delta t}{r}\) around the circle.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>The velocity arrow (length \(v\)) swings through that same angle, so it changes by \(\Delta v = v\,\Delta\theta\):</p><div class="eq">\[ \Delta v = v\cdot\frac{v\,\Delta t}{r} = \frac{v^2}{r}\,\Delta t \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Acceleration is \(\dfrac{\Delta v}{\Delta t}\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ a = \frac{v^2}{r}\quad(\text{toward the centre}),\qquad F = \frac{mv^2}{r} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Banked race tracks &amp; highway curves.</b> Tilted so the road itself supplies the inward push.</li>
+          <li><b>Washing machine spin cycle.</b> Water flies outward through the drum holes while clothes are held in.</li>
+          <li><b>Centrifuges.</b> Spin blood or DNA fast enough and heavy bits separate — vital in hospitals and labs.</li>
+          <li><b>Satellites.</b> Gravity is the inward pull keeping them circling instead of flying off.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> There's no real "outward" force flinging you against the car door on a turn — your body just wants to go straight, and the door pushes you inward. The "centrifugal force" you feel is your own inertia arguing with the turn.</div>
+      </div>
+    </section>
+
+    <!-- ============ CH6 ============ -->
+    <section class="chapter" id="c6">
+      <div class="chap-head"><div class="badge">6</div><div><span class="ch-kicker">Part II · Forces &amp; Energy</span><h3>Gravity &amp; the Heavens</h3></div></div>
+      <p class="chap-intro">Newton's leap was almost unbelievable: the <em>same</em> force that makes an apple fall holds the Moon in its orbit and steers the planets. One law, written once, governs an apple and a galaxy. It let humans predict eclipses centuries ahead and, eventually, fling spacecraft to other worlds.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Surface gravity · <span class="formula-tag">\(g = \dfrac{GM}{R^2}\)</span></h4>
+        <p class="lead">Why everything falls at the same rate — and why that rate depends on the planet, not on you.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Newton (1687) &amp; Henry Cavendish (1798)</p>
+          <p>Newton's law had a mystery number \(G\) nobody could measure. Over a century later, the reclusive Henry Cavendish hung lead balls from a delicate twisting wire in a sealed shed and watched them tug on each other by a hair's breadth. He had, in effect, <em>weighed the Earth</em> — one of the most exquisite experiments ever performed.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Newton's gravity on a mass \(m\) at a planet's surface:</p><div class="eq">\[ F = \frac{GMm}{R^2} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>That force is the weight, also written \(mg\). Set them equal:</p><div class="eq">\[ mg = \frac{GMm}{R^2} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>The \(m\) cancels — so every object falls identically:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ g = \frac{GM}{R^2} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>You'd weigh ~⅓ as much on Mars.</b> Same you, smaller planet, smaller \(g\).</li>
+          <li><b>Oil &amp; mineral hunting.</b> Tiny local changes in \(g\) reveal dense ore or hidden caverns underground.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Orbital &amp; escape velocity · <span class="formula-tag">\(v_e = \sqrt{\dfrac{2GM}{R}}\)</span></h4>
+        <p class="lead">There's a precise speed to circle a planet, and a faster one to leave it forever.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p><b>Orbit:</b> gravity supplies the centripetal force, so \(\dfrac{GMm}{r^2}=\dfrac{mv^2}{r}\). Cancel and solve:</p><div class="eq">\[ v_{\text{orbit}} = \sqrt{\frac{GM}{r}} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p><b>Escape:</b> to just break free, kinetic energy must cancel gravitational energy (total energy zero):</p><div class="eq">\[ \tfrac12 m v_e^2 - \frac{GMm}{R}=0 \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Cancel \(m\), times 2, square root:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ v_e = \sqrt{\frac{2GM}{R}} \approx 11.2\ \text{km/s for Earth} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Every rocket launch.</b> Mission planners must hit orbital speed (~7.8 km/s) precisely, or escape speed to reach other planets.</li>
+          <li><b>GPS &amp; communications satellites.</b> Parked at the exact radius where orbital period equals one day, so they hover over the same spot.</li>
+          <li><b>Black holes.</b> A black hole is just a place where escape velocity exceeds the speed of light — so not even light gets out.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Kepler's third law · <span class="formula-tag">\(T^2 \propto r^3\)</span></h4>
+        <p class="lead">Distant planets don't just travel farther — they also crawl slower, in a precise mathematical lockstep.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Johannes Kepler · 1619 · from Tycho Brahe's data</p>
+          <p>Kepler inherited decades of obsessively precise naked-eye observations from the flamboyant Danish astronomer Tycho Brahe (who had a metal nose after a duel). After years wrestling with the numbers, Kepler found the planets trace ellipses, not perfect circles — and that this clean \(T^2\propto r^3\) ratio held for every one. Newton later proved it falls straight out of gravity.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Period = circumference ÷ orbital speed, with \(v=\sqrt{GM/r}\):</p><div class="eq">\[ T = \frac{2\pi r}{\sqrt{GM/r}} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Tidy: \(\dfrac{r}{\sqrt{1/r}}=r^{3/2}\), then square both sides:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ T^2 = \frac{4\pi^2}{GM}\,r^3 \]</div></div>
+          <div class="stepnote">The bracket is the same for everything orbiting one star — so \(T^2/r^3\) is fixed.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Weighing distant stars.</b> Watch a planet's period and distance, and this equation hands you the star's mass.</li>
+          <li><b>Hunting exoplanets.</b> Astronomers use it to map alien solar systems light-years away.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH7 ============ -->
+    <section class="chapter" id="c7">
+      <div class="chap-head"><div class="badge">7</div><div><span class="ch-kicker">Part II · Forces &amp; Energy · NEW</span><h3>Spin &amp; Rotation</h3></div></div>
+      <p class="chap-intro">Straight-line rules have twirling twins. Push becomes <em>twist</em> (torque), mass becomes "how spread out" (moment of inertia), and momentum becomes <em>angular</em> momentum — the quantity a spinning skater hoards to whirl faster. Once you see the parallel, half of rotation is free.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Newton's law for spinning · <span class="formula-tag">\(\tau = I\alpha\)</span></h4>
+        <p class="lead">Twist (torque) makes things spin up, but fat, spread-out objects resist — that's their moment of inertia.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Leonhard Euler · 1700s</p>
+          <p>Newton gave us straight-line motion; the staggeringly prolific Swiss mathematician Leonhard Euler built the rotational version. Even after going blind, Euler kept producing maths at a furious pace, dictating to assistants — including the equations that let us spin everything from flywheels to spacecraft on purpose.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Take a single mass \(m\) on a spoke of radius \(r\). A tangential force gives it \(F=ma\), and its line-speed acceleration relates to spin via \(a=r\alpha\):</p><div class="eq">\[ F = m r\alpha \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Torque is "force × lever arm," \(\tau=Fr\). Multiply through by \(r\):</p><div class="eq">\[ \tau = Fr = m r^2 \alpha \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>The combination \(mr^2\) is the moment of inertia \(I\) — rotational "stubbornness":</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \tau = I\alpha \qquad(\text{the spinning } F=ma) \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Why door handles are far from the hinge.</b> More lever arm = more torque for the same push.</li>
+          <li><b>Wrenches &amp; engines.</b> Your car's "torque" rating is its twisting muscle; a longer wrench loosens stubborn bolts.</li>
+          <li><b>Tightrope walkers' long poles.</b> They add moment of inertia, making tipping slow and correctable.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Conservation of angular momentum · <span class="formula-tag">\(L = I\omega = \text{const}\)</span></h4>
+        <p class="lead">Pull your spinning mass inward and you <em>must</em> spin faster — the secret behind every figure-skating finale.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>With no outside twist, angular momentum \(L=I\omega\) can't change.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>A skater pulling her arms in shrinks \(I\) (mass moves closer to the axis). For \(L\) to stay fixed, \(\omega\) must rise:</p><div class="eq">\[ I_{\text{big}}\,\omega_{\text{slow}} = I_{\text{small}}\,\omega_{\text{fast}} \]</div></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \omega_{\text{fast}} = \frac{I_{\text{big}}}{I_{\text{small}}}\,\omega_{\text{slow}} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Figure skaters &amp; divers.</b> Arms in to spin up, arms out to slow down — live physics on ice.</li>
+          <li><b>Helicopters' tail rotors.</b> They exist purely to counter the body's tendency to spin the opposite way.</li>
+          <li><b>Neutron stars.</b> A dying star collapses to city size and spins up to hundreds of times per second.</li>
+          <li><b>How a falling cat lands on its feet.</b> It twists one half against the other while conserving \(L\).</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> A spinning bike wheel is weirdly hard to tilt — that stubbornness is angular momentum. It's also why a moving bicycle balances itself and why a gyroscope can steer a rocket.</div>
+      </div>
+    </section>
+
+    <!-- ============ CH8 ============ -->
+    <section class="chapter" id="c8">
+      <div class="chap-head"><div class="badge">8</div><div><span class="ch-kicker">Part II · Forces &amp; Energy · NEW</span><h3>Fluids &amp; Flight</h3></div></div>
+      <p class="chap-intro">Liquids and gases can't be pushed like solid blocks, yet they obey beautifully simple rules. Two ancient and not-so-ancient discoveries — one shouted from a bathtub, one that keeps 400-tonne jets in the sky — show how pressure does the heavy lifting.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Archimedes' principle · <span class="formula-tag">\(F_{\text{buoy}} = \rho g V\)</span></h4>
+        <p class="lead">Anything in a fluid is pushed up by the weight of the fluid it shoves out of the way.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Archimedes · Syracuse · ~250 BCE</p>
+          <p>A king suspected his gold crown was secretly cut with cheap silver. Archimedes, stepping into a full bath and watching it overflow, realised submerged objects displace their own volume — and reportedly ran naked through the streets yelling "Eureka!" ("I've found it!"). By comparing the crown's displacement to pure gold, he could expose the fraud without melting a thing.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Fluid pressure grows with depth: \(P=\rho g h\). So the bottom of a submerged block feels more pressure than its top.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>For a block of area \(A\) and height \(H\), the net upward push is the pressure difference times area:</p><div class="eq">\[ F = (P_{\text{bottom}}-P_{\text{top}})A = \rho g H \cdot A \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>But \(H\cdot A\) is just the block's volume \(V\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ F_{\text{buoy}} = \rho g V = \text{weight of displaced fluid} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Why steel ships float.</b> Hollow hulls displace enormous volumes of water — the upward push beats their weight.</li>
+          <li><b>Submarines.</b> Flood or empty tanks to tune buoyancy and dive or surface.</li>
+          <li><b>Hot-air balloons.</b> Same idea in air: warm, light air displaces cooler, heavier air.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Bernoulli's principle · <span class="formula-tag">\(P + \tfrac12\rho v^2 + \rho g h = \text{const}\)</span></h4>
+        <p class="lead">Speed a fluid up and its pressure drops — the quiet trick behind wings, sails, and spinning footballs.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Daniel Bernoulli · Switzerland · 1738</p>
+          <p>Daniel Bernoulli came from a family of mathematicians so competitive that his own father reportedly tried to steal credit for his work and barred him from home. Undeterred, Daniel realised a fluid's energy is shared between pressure, motion, and height — and that the three trade off. Speed rises, pressure falls.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>It's energy conservation for a flowing parcel of fluid. Each unit of volume carries three energy "currencies": pressure energy \(P\), motion energy \(\tfrac12\rho v^2\), and height energy \(\rho g h\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>With no friction, the total can't change as the fluid flows along:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ P + \tfrac12\rho v^2 + \rho g h = \text{constant} \]</div></div>
+          <div class="stepnote">So if \(v\) goes up along a pipe or over a wing, \(P\) must go down to keep the sum fixed.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>How planes fly.</b> Air rushes faster over the curved top of a wing, lowering pressure there and lifting the plane (it works together with the wing deflecting air downward).</li>
+          <li><b>Curveballs &amp; "bending it like Beckham."</b> Spin makes one side of the ball move faster through the air, bending its path.</li>
+          <li><b>Carburettors, perfume atomisers, chimney draughts.</b> Fast-moving air sucks fluid along with it.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <div class="partbreak"><div class="pno">Part Three</div><h2>Vibrations &amp; Waves</h2><div class="rule"></div></div>
+
+    <!-- ============ CH9 ============ -->
+    <section class="chapter" id="c9">
+      <div class="chap-head"><div class="badge">9</div><div><span class="ch-kicker">Part III · Vibrations &amp; Waves</span><h3>Swings &amp; Springs</h3></div></div>
+      <p class="chap-intro">Anything that gets pulled back harder the further it strays — a pendulum, a guitar string, an atom in a crystal — wobbles in the same elegant rhythm called simple harmonic motion. Master one spring and you've understood a stunning slice of the universe.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Mass on a spring · <span class="formula-tag">\(T = 2\pi\sqrt{\dfrac{m}{k}}\)</span></h4>
+        <p class="lead">Heavier masses bob slowly; stiffer springs snap back fast. The period captures both.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Robert Hooke · England · 1660</p>
+          <p>Hooke — Newton's brilliant, prickly rival — found that a spring's pull is simply proportional to its stretch. He first published it as a scrambled Latin anagram (<em>ceiiinosssttuv</em>) to claim priority while keeping it secret, later revealing "<em>ut tensio, sic vis</em>" — "as the stretch, so the force." Pure scientific drama.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Hooke's law gives the restoring force \(F=-kx\). With \(F=ma\):</p><div class="eq">\[ ma=-kx \;\Rightarrow\; a=-\frac{k}{m}\,x \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Harmonic motion always has the form \(a=-\omega^2 x\). Matching gives \(\omega^2=\dfrac{k}{m}\), and the period is \(T=\dfrac{2\pi}{\omega}\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ T = 2\pi\sqrt{\frac{m}{k}} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Car suspension.</b> Springs and dampers tuned so you glide, not bounce, over bumps.</li>
+          <li><b>Skyscrapers in earthquakes.</b> Giant "tuned mass dampers" sway to cancel the building's wobble.</li>
+          <li><b>Quartz watches.</b> A tiny vibrating crystal keeps time to within seconds a month.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>The simple pendulum · <span class="formula-tag">\(T = 2\pi\sqrt{\dfrac{L}{g}}\)</span></h4>
+        <p class="lead">A pendulum's swing depends only on its length and gravity — not on how heavy the bob is, nor (for small swings) how far it swings.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Galileo · bored in church, ~1583</p>
+          <p>Legend says a teenage Galileo, watching a lamp swing in Pisa cathedral, timed it against his own pulse and noticed each swing took the same time regardless of size. That observation became the pendulum clock and ruled timekeeping for 300 years — accurate navigation at sea once depended on it.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>The restoring pull is gravity's sideways component, \(F=-mg\sin\theta\). For small angles, \(\sin\theta\approx\theta\):</p><div class="eq">\[ F\approx -mg\,\theta \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Along the arc, displacement \(x=L\theta\), so \(\theta=x/L\):</p><div class="eq">\[ F = -\frac{mg}{L}\,x \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>This is \(F=-kx\) with \(k=\dfrac{mg}{L}\). Drop it into the spring result; the mass cancels:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ T = 2\pi\sqrt{\frac{L}{g}} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Grandfather clocks.</b> A roughly 1-metre pendulum ticks once a second — by design.</li>
+          <li><b>Measuring gravity.</b> Time a pendulum and you can measure \(g\), and so map what's buried below.</li>
+          <li><b>Metronomes &amp; playground swings.</b> Same rhythm, same equation.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> A pendulum's swing plane slowly rotates over a day — Foucault's famous experiment — silently proving the Earth turns beneath it, without ever looking at the sky.</div>
+      </div>
+    </section>
+
+    <!-- ============ CH10 ============ -->
+    <section class="chapter" id="c10">
+      <div class="chap-head"><div class="badge">10</div><div><span class="ch-kicker">Part III · Vibrations &amp; Waves</span><h3>Waves &amp; Sound</h3></div></div>
+      <p class="chap-intro">A wave is a clever trick: <em>energy</em> travels across a room while the stuff it travels through — air, water, a rope — mostly just jiggles in place. The same rules describe ripples on a pond, the note of a violin, light from a star, and the wifi reaching this page.</p>
+
+      <div class="concept">
+        <div class="head"><h4>The wave equation · <span class="formula-tag">\(v = f\lambda\)</span></h4>
+        <p class="lead">A wave's speed is just how many wavelengths pass each second, each a wavelength long.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>In one full cycle the wave advances exactly one wavelength \(\lambda\), taking one period \(T\). Speed = distance ÷ time:</p><div class="eq">\[ v=\frac{\lambda}{T} \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Frequency is cycles per second, \(f=1/T\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ v = f\lambda \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Radio &amp; wifi.</b> Stations are labelled by frequency (e.g. 98.5 FM); this equation converts that to wavelength for antenna design.</li>
+          <li><b>Musical instruments.</b> Shorter strings/pipes → higher frequency → higher pitch.</li>
+          <li><b>Microwave ovens.</b> A fixed wavelength creates hot/cold spots — which is why the plate rotates.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>The Doppler effect · <span class="formula-tag">\(f' = f\left(\dfrac{v}{v - v_s}\right)\)</span></h4>
+        <p class="lead">An approaching source bunches its waves up, raising the pitch; as it passes and recedes, the pitch drops — the "neeee-yowww" of a passing car.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Christian Doppler · 1842 · tested with trumpeters on a train</p>
+          <p>Doppler predicted moving sources should shift in pitch. To test it, a Dutch scientist hired a brass band to play a steady note aboard an open railway carriage while listeners on the platform noted the change. The pitch dropped as it passed — exactly as predicted. A brass band on a moving train confirmed a law now used to scan unborn babies and measure the expanding universe.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>In one period the source emits a wave but also creeps forward \(v_s T\), squashing the wavelength ahead:</p><div class="eq">\[ \lambda' = (v-v_s)\,T \]</div></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>The sound still travels at \(v\), so the heard frequency \(f'=v/\lambda'\). Using \(\lambda=vT\) and \(1/T=f\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ f' = f\left(\frac{v}{v-v_s}\right) \]</div></div>
+          <div class="stepnote">Since \(v-v_s<v\), the fraction beats 1 and the pitch <b>rises</b> on approach; flip the sign as it recedes.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Doppler ultrasound.</b> Measures blood flow and a baby's heartbeat from how sound bounces off moving cells.</li>
+          <li><b>Police &amp; weather radar.</b> Speed guns and storm tracking both read the frequency shift.</li>
+          <li><b>The expanding universe.</b> Light from distant galaxies is shifted toward red — the cosmic Doppler effect that revealed the Big Bang.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <div class="partbreak"><div class="pno">Part Four</div><h2>Heat &amp; Matter</h2><div class="rule"></div></div>
+
+    <!-- ============ CH11 ============ -->
+    <section class="chapter" id="c11">
+      <div class="chap-head"><div class="badge">11</div><div><span class="ch-kicker">Part IV · Heat &amp; Matter</span><h3>Heat &amp; the Restless Atom</h3></div></div>
+      <p class="chap-intro">For ages, heat was imagined as a mysterious invisible fluid called "caloric." The truth is wilder and simpler: heat is just <em>jiggling</em>. Temperature is the average speed of countless atoms zooming and bouncing. Pressure is their constant drumming on the walls. This insight unified heat with motion — and proving atoms were real cost one of its champions his life.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Pressure of a gas · <span class="formula-tag">\(P = \tfrac13\rho\,\overline{v^2}\)</span></h4>
+        <p class="lead">The push of a gas is nothing but the combined hammering of trillions of tiny molecules against the container.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Maxwell, Boltzmann &amp; the reality of atoms · late 1800s</p>
+          <p>James Clerk Maxwell and Ludwig Boltzmann built the picture of gases as swarms of bouncing molecules. Many leading scientists still didn't believe atoms even existed, and Boltzmann was attacked relentlessly for insisting they did. Battling depression and ridicule, he died by suicide in 1906 — just as the tide turned. His tombstone is engraved with his entropy equation. He was right; atoms are real.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>One molecule (mass \(m\)) hits a wall and rebounds, reversing its momentum by \(2mv_x\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>In a box of side \(L\) it comes back every \(\dfrac{2L}{v_x}\) seconds, so the force it exerts is:</p><div class="eq">\[ F_1 = \frac{2mv_x}{2L/v_x} = \frac{mv_x^2}{L} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>For \(N\) molecules, pressure = total force ÷ wall area, with volume \(V=L^3\):</p><div class="eq">\[ P = \frac{Nm\,\overline{v_x^2}}{V} \]</div></div></div>
+          <div class="step"><div class="sn">4</div><div class="sc"><p>Motion is random in 3 directions so \(\overline{v_x^2}=\tfrac13\overline{v^2}\), and \(\rho=Nm/V\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ P = \tfrac13\rho\,\overline{v^2} \]</div></div>
+          <div class="stepnote">Compare with \(PV=NkT\) and you find the average molecular energy is \(\tfrac12 m\overline{v^2}=\tfrac32 kT\): <b>temperature literally is motion.</b></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Why a hot tyre reads higher pressure.</b> Hotter air = faster molecules = harder drumming.</li>
+          <li><b>Pressure cookers &amp; engines.</b> Heating trapped gas raises pressure to cook fast or drive pistons.</li>
+          <li><b>Weather.</b> Warm air's extra molecular bounce drives winds, storms, and pressure systems.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> Absolute zero (−273.15 °C) is the temperature where molecular jiggling would stop entirely. We've cooled atoms to billionths of a degree above it — but quantum rules forbid ever truly reaching it.</div>
+      </div>
+    </section>
+
+    <!-- ============ CH12 ============ -->
+    <section class="chapter" id="c12">
+      <div class="chap-head"><div class="badge">12</div><div><span class="ch-kicker">Part IV · Heat &amp; Matter · NEW</span><h3>The Laws of Heat</h3></div></div>
+      <p class="chap-intro">Thermodynamics began with a very practical question — how to get more work out of a steam engine — and ended up explaining why time only runs forwards, why perpetual-motion machines are impossible, and perhaps how the universe will end. Few fields travel so far from such humble origins.</p>
+
+      <div class="concept">
+        <div class="head"><h4>First law · <span class="formula-tag">\(\Delta U = Q - W\)</span></h4>
+        <p class="lead">Energy is never free: the heat you add either warms a thing up or gets spent doing work. Books always balance.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">James Joule · England · 1840s</p>
+          <p>Joule, a brewer by trade, obsessively measured how stirring, friction, and electricity all turned into the <em>same</em> amount of heat. He even tried to measure the warming of waterfalls on his honeymoon. His painstaking work proved heat and work are two faces of one thing — energy — which is why the unit of energy bears his name.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>This <em>is</em> conservation of energy applied to heat. A system's internal energy \(U\) (its stored molecular jiggling) can change two ways:</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>You can pour heat \(Q\) <em>in</em>, or the system can spend energy doing work \(W\) <em>out</em>. The net change is the difference:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \Delta U = Q - W \]</div></div>
+          <div class="stepnote">This is why a <b>perpetual-motion machine that creates energy is impossible</b> — there's no spare energy in the ledger.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Engines &amp; power plants.</b> Every one is heat in, work out, accounted to the joule.</li>
+          <li><b>Refrigerators &amp; air conditioners.</b> Run the law backwards: do work to pump heat from cold to hot.</li>
+          <li><b>Your body.</b> Food energy in = work done + heat radiated. Dieting is thermodynamics.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>The second law &amp; entropy · <span class="formula-tag">\(\Delta S \ge 0\)</span></h4>
+        <p class="lead">Left alone, things get messier, heat flows from hot to cold, and you can never turn heat fully back into work. Disorder always wins.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Sadi Carnot (1824) &amp; Rudolf Clausius (1865)</p>
+          <p>A young French engineer, Sadi Carnot, asked the best possible efficiency of a steam engine — and discovered a hard ceiling no machine can beat. Clausius later named the quantity that always grows: <em>entropy</em>. It's the deepest "you can't win, and you can't break even" rule in all of science, and it gives time its one-way arrow.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Entropy measures how many microscopic arrangements look the same from outside — roughly, "how disordered." A shuffled deck has vastly more arrangements than a sorted one.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Because disordered states are overwhelmingly more numerous, random jostling almost always lands you in one. So for any isolated system:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \Delta S \ge 0,\qquad \text{best engine efficiency } \eta = 1-\frac{T_{\text{cold}}}{T_{\text{hot}}} \]</div></div>
+          <div class="stepnote">The efficiency limit is why engines run hot: a bigger hot–cold gap is the only way to win more work.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Why your coffee always cools.</b> Heat flows to the cold room, never spontaneously back.</li>
+          <li><b>Engine efficiency limits.</b> Even a perfect car engine wastes most of its fuel as heat — by law, not by sloppiness.</li>
+          <li><b>The arrow of time.</b> The past differs from the future only because entropy was lower back then. It may even decide the fate of the cosmos.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> A broken egg never reassembles, though no law of motion forbids it. The only thing stopping the movie running backwards is statistics — the messy outcomes simply outnumber the tidy ones beyond all imagining.</div>
+      </div>
+    </section>
+
+    <div class="partbreak"><div class="pno">Part Five</div><h2>Electricity &amp; Magnetism</h2><div class="rule"></div></div>
+
+    <!-- ============ CH13 ============ -->
+    <section class="chapter" id="c13">
+      <div class="chap-head"><div class="badge">13</div><div><span class="ch-kicker">Part V · Electricity &amp; Magnetism</span><h3>Electric Currents</h3></div></div>
+      <p class="chap-intro">Tame the flow of invisible electrons and you can light a city. The rules turn out to be reassuringly like water in pipes: voltage is the pressure, current is the flow, resistance is the narrowness. From that plumbing analogy, the whole electric world unfolds.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Resistors in series · <span class="formula-tag">\(R = R_1 + R_2\)</span></h4>
+        <p class="lead">Line resistors up one after another and their resistances simply add — like adding pipe length.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Georg Ohm · Germany · 1827</p>
+          <p>Ohm published his neat law relating voltage, current, and resistance — and was met with scorn. Critics called it "a web of naked fantasies"; he resigned his teaching post in disgrace. Decades later he was vindicated and honoured, and the unit of resistance now carries his name. Being right early is often lonely.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>In series the same current \(I\) flows through both, and their voltage drops add: \(V=V_1+V_2\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Apply Ohm's law \(V=IR\) to each:</p><div class="eq">\[ IR = IR_1 + IR_2 \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Divide by the common \(I\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ R = R_1 + R_2 \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Old fairy lights.</b> One bulb dies and the whole string goes dark — classic series wiring.</li>
+          <li><b>Dimmers &amp; volume knobs.</b> Add resistance in line to throttle current.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Resistors in parallel · <span class="formula-tag">\(\tfrac1R = \tfrac1{R_1}+\tfrac1{R_2}\)</span></h4>
+        <p class="lead">Side-by-side paths give the current more room, so the combined resistance is <em>lower</em> than either alone.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>In parallel both feel the same voltage \(V\), and the current splits: \(I=I_1+I_2\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Use \(I=V/R\) for each branch:</p><div class="eq">\[ \frac{V}{R}=\frac{V}{R_1}+\frac{V}{R_2} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Divide through by \(V\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \frac{1}{R}=\frac{1}{R_1}+\frac{1}{R_2} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Your home wiring.</b> Every socket is in parallel, so each gets the full 230 V (or 120 V) and one switch-off doesn't kill the rest.</li>
+          <li><b>The power grid.</b> Adding users in parallel keeps everyone's voltage steady.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Energy in a capacitor · <span class="formula-tag">\(E = \tfrac12 CV^2\)</span></h4>
+        <p class="lead">Capacitors store charge like a coiled spring stores push — ready to dump energy in a flash.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>As you charge it, the voltage rises with the charge already on it: \(V=q/C\). Adding a sliver \(\mathrm{d}q\) costs \(\dfrac{q}{C}\mathrm{d}q\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Sum it up from 0 to \(Q\) (the area under the \(V\)–\(q\) line):</p><div class="eq">\[ E=\int_0^Q\frac{q}{C}\,\mathrm{d}q=\frac{Q^2}{2C} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Using \(Q=CV\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ E=\tfrac12 CV^2 \]</div></div>
+          <div class="stepnote">The \(\tfrac12\) appears because early charge went on while the voltage was still low — only the <b>average</b> voltage counts.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Camera flash.</b> A capacitor charges slowly, then dumps it all in a blinding millisecond.</li>
+          <li><b>Defibrillators.</b> Store a controlled jolt of energy to restart a heart.</li>
+          <li><b>Every electronic device.</b> Capacitors smooth power and keep memory alive between blinks.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH14 ============ -->
+    <section class="chapter" id="c14">
+      <div class="chap-head"><div class="badge">14</div><div><span class="ch-kicker">Part V · Electricity &amp; Magnetism · NEW</span><h3>Magnetism &amp; Induction</h3></div></div>
+      <p class="chap-intro">The single most important discovery for modern life might be this: <em>move a magnet near a wire and electricity appears, from nothing.</em> That one fact powers every generator on Earth — the dams, the wind farms, the power stations. A self-taught bookbinder's apprentice found it.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Electromagnetic induction · <span class="formula-tag">\(\mathcal{E} = BLv\)</span></h4>
+        <p class="lead">Sweep a wire of length \(L\) through a magnetic field at speed \(v\) and you generate a voltage out of pure motion.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Michael Faraday · England · 1831</p>
+          <p>Faraday left school at 13 and taught himself science while binding books. With almost no maths, his sheer experimental genius revealed that a <em>changing</em> magnetic field creates electricity. Asked by a politician what use it could possibly be, he reportedly replied, "One day, sir, you may tax it." He was right — induction now generates virtually all the world's power.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>A magnetic field pushes on moving charges with force \(F=qvB\). Drag a wire through the field and its free electrons feel this push along the wire.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>That push acts like a battery. The "voltage" (EMF) is force-per-charge times the wire length \(L\):</p><div class="eq">\[ \mathcal{E} = \frac{F}{q}\times L = (vB)\,L \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>So motion through a field literally manufactures voltage:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \mathcal{E} = BLv \qquad\Big(\text{general form: } \mathcal{E}=-\tfrac{\Delta\Phi}{\Delta t}\Big) \]</div></div>
+          <div class="stepnote"><b>Lenz's law</b> sets the minus sign: the induced current always opposes the change that made it — nature's way of conserving energy (you can't get power for free; you must push against a drag).</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Every power station.</b> Coal, nuclear, hydro, wind — all just spin magnets near coils to induce current. The fuel only turns the turbine.</li>
+          <li><b>Electric motors.</b> Run induction backwards: feed in current near a magnet and get motion. Fans, trains, hard drives, EVs.</li>
+          <li><b>Phone wireless charging &amp; induction stoves.</b> A changing field induces current (or heat) with no wires touching.</li>
+          <li><b>Regenerative braking.</b> An EV slowing down turns its motor into a generator, recapturing energy into the battery.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> Drop a magnet down a copper pipe and it falls in slow motion — eerily floating downward. The moving magnet induces currents in the copper that push back against it (Lenz's law in action), with no contact at all.</div>
+      </div>
+    </section>
+
+    <div class="partbreak"><div class="pno">Part Six</div><h2>Light &amp; the Modern World</h2><div class="rule"></div></div>
+
+    <!-- ============ CH15 ============ -->
+    <section class="chapter" id="c15">
+      <div class="chap-head"><div class="badge">15</div><div><span class="ch-kicker">Part VI · Light &amp; the Modern World</span><h3>Light &amp; Optics</h3></div></div>
+      <p class="chap-intro">Bend light and you can correct a child's eyesight, see a living cell, or photograph a galaxy. The rules of how light turns and focuses are ancient, but understanding <em>why</em> light bends — because it slows down in glass and water — is one of physics' most satisfying "aha"s.</p>
+
+      <div class="concept">
+        <div class="head"><h4>Snell's law · <span class="formula-tag">\(n_1\sin\theta_1 = n_2\sin\theta_2\)</span></h4>
+        <p class="lead">Light bends when it changes speed crossing into a new material — the reason a straw looks broken in a glass of water.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Ibn Sahl (984), Snellius (1621), and Newton's prism</p>
+          <p>The Persian scholar Ibn Sahl described the bending of light over 600 years before the Dutchman Willebrord Snell rediscovered it. Then Isaac Newton passed sunlight through a prism and split it into a rainbow, proving white light is a <em>mixture</em> of colours — each bending by a slightly different amount. Optics is a thousand-year relay race.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Picture a wide wavefront hitting the surface at a slant. One edge enters the slower medium first and slows, while the other edge races on — so the front pivots, like a marching band wheeling when one flank takes shorter steps.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>The geometry gives \(\dfrac{\sin\theta_1}{\sin\theta_2}=\dfrac{v_1}{v_2}\). Refractive index is defined as \(n=c/v\), so \(v=c/n\). Substitute; the \(c\)'s cancel:</p><div class="eq">\[ \frac{\sin\theta_1}{\sin\theta_2}=\frac{n_2}{n_1} \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Cross-multiply:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ n_1\sin\theta_1 = n_2\sin\theta_2 \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Glasses, contacts &amp; cameras.</b> Every lens bends light by this rule to focus an image.</li>
+          <li><b>Rainbows &amp; diamonds.</b> Different colours bend differently, scattering light into spectra and sparkle.</li>
+          <li><b>Fibre-optic internet.</b> Light is trapped inside glass strands by total internal reflection — Snell's law taken to its extreme.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>The lens &amp; mirror formula · <span class="formula-tag">\(\tfrac1v + \tfrac1u = \tfrac1f\)</span></h4>
+        <p class="lead">A single tidy relation ties where an object sits, where its image forms, and the lens's focusing power.</p></div>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Trace two rays from the object: one through the lens centre (straight through), one parallel to the axis (bent through the focus \(F\)). Where they cross is the image.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>This builds two pairs of <em>similar triangles</em> (same shape, different size). One pair links the image and object heights to \(u\) and \(v\); the other links them through \(f\).</p></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Setting the matching ratios equal and cancelling the shared heights gives:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \frac{1}{v}+\frac{1}{u}=\frac{1}{f},\qquad \text{magnification } m=-\frac{v}{u} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Telescopes &amp; microscopes.</b> Galileo's telescope revealed Jupiter's moons; this formula sizes every one since.</li>
+          <li><b>Your phone camera.</b> Tiny lenses positioned by this equation to focus on near or far.</li>
+          <li><b>Your own eyes.</b> The lens flexes to change \(f\); glasses correct it when it can't focus right.</li>
+        </ul></div></details>
+      </div>
+    </section>
+
+    <!-- ============ CH16 ============ -->
+    <section class="chapter" id="c16">
+      <div class="chap-head"><div class="badge">16</div><div><span class="ch-kicker">Part VI · Light &amp; the Modern World</span><h3>The Quantum &amp; Relativity</h3></div></div>
+      <p class="chap-intro">Around 1900, physics seemed nearly finished — and then it shattered, gloriously. Light turned out to come in lumps, matter turned out to ripple like waves, mass turned out to be frozen energy, and time itself turned out to bend with speed. Welcome to the strangest, most powerful ideas humans have ever had.</p>
+
+      <div class="concept">
+        <div class="head"><h4>The photoelectric equation · <span class="formula-tag">\(E_k = hf - \phi\)</span></h4>
+        <p class="lead">Light arrives in discrete packets (photons). Each one frees one electron — and only if it carries enough energy.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Max Planck (1900) &amp; Albert Einstein (1905)</p>
+          <p>Planck reluctantly proposed that energy comes in tiny indivisible chunks ("quanta") to fix a stubborn problem — and called it a desperate act. Einstein took it literally: light itself is lumps. In his "miracle year" of 1905, while working as a patent clerk, Einstein explained the photoelectric effect this way. It won him the Nobel Prize — not relativity — and launched quantum physics.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Each photon delivers a fixed energy \(hf\) to a single electron — all or nothing.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>Some energy \(\phi\) (the "work function") is spent just escaping the metal. By energy conservation, the rest becomes motion:</p><div class="eq">\[ hf = \phi + E_k \]</div></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ E_{k,\max} = hf - \phi \]</div></div>
+          <div class="stepnote">Below a threshold frequency, <b>no electrons escape no matter how bright the light</b> — proof that light is grainy, not smooth.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Solar panels.</b> Photons knock electrons loose to make electricity — the photoelectric effect powering the planet.</li>
+          <li><b>Digital cameras &amp; phone sensors.</b> Each pixel counts photons hitting it.</li>
+          <li><b>Automatic doors &amp; night-vision.</b> Light sensors built on the same physics.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Matter waves · <span class="formula-tag">\(\lambda = \dfrac{h}{p}\)</span></h4>
+        <p class="lead">If light can act like particles, then particles — even you — can act like waves. They just have an unimaginably tiny wavelength.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Louis de Broglie · France · 1924 (a PhD thesis!)</p>
+          <p>A French aristocrat proposed in his doctoral thesis that matter has a wavelength. His examiners were so baffled they sent it to Einstein, who declared it brilliant. Within years, electrons were shown to diffract like waves, and de Broglie won the Nobel Prize — for a student dissertation.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>A photon's momentum is \(p=hf/c=h/\lambda\).</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>de Broglie's leap: turn it around. Anything with momentum \(p\) must have a wavelength:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ \lambda=\frac{h}{p}=\frac{h}{mv} \]</div></div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>Electron microscopes.</b> Electrons' tiny wavelength lets us see viruses and atoms, far beyond light microscopes.</li>
+          <li><b>Modern chemistry.</b> The wave nature of electrons explains the shapes of atoms and every chemical bond.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Mass–energy · <span class="formula-tag">\(E = mc^2\)</span></h4>
+        <p class="lead">Mass and energy are the same thing in different clothes — and the exchange rate, \(c^2\), is colossal.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Albert Einstein · 1905</p>
+          <p>Buried in a three-page afterthought to his relativity paper, Einstein asked whether an object's mass depends on its energy content — and answered yes. A speck of matter holds staggering energy. This single line explains why the Sun shines, and, more darkly, the power of the atom.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Light carries momentum \(p=E/c\). Imagine a sealed box that emits a flash of light energy \(E\) from one end; like a gun, the box recoils.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>For the box's centre of mass to stay put (no outside force allowed), the energy that crossed the box must have <em>carried mass</em> with it. Balancing the momentum books, that mass satisfies:</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ E = mc^2 \]</div></div>
+          <div class="stepnote">A simplified argument — the full result comes from special relativity — but it captures the truth.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>The Sun &amp; stars.</b> Fusing hydrogen converts a sliver of mass into the sunlight that grows our food.</li>
+          <li><b>Nuclear power.</b> Splitting heavy atoms turns mass-defect into electricity for millions.</li>
+          <li><b>PET scans.</b> Antimatter in hospitals annihilates with matter, turning mass fully into detectable energy.</li>
+        </ul></div></details>
+      </div>
+
+      <div class="concept">
+        <div class="head"><h4>Time dilation · <span class="formula-tag">\(t = \dfrac{t_0}{\sqrt{1 - v^2/c^2}}\)</span></h4>
+        <p class="lead">Move fast and your clock genuinely runs slow compared to someone standing still. Time is not the same for everyone.</p></div>
+        <details class="panel story"><summary><span class="ico">📜</span> The story <span class="chev">›</span></summary><div class="body">
+          <p class="who">Albert Einstein · 1905 · special relativity</p>
+          <p>Einstein started from one stubborn fact: everyone measures light at the same speed, no matter how they move. Following that ruthlessly to its conclusions, he found that time and space themselves must stretch and squeeze. The cost of light's constancy is that simultaneity, duration, and length all become relative.</p>
+        </div></details>
+        <details class="panel deriv"><summary><span class="ico">✏️</span> The derivation <span class="chev">›</span></summary><div class="body">
+          <div class="step"><div class="sn">1</div><div class="sc"><p>Picture a "light clock": a pulse bouncing straight up and down between two mirrors, ticking once per round trip.</p></div></div>
+          <div class="step"><div class="sn">2</div><div class="sc"><p>To someone watching it fly past at speed \(v\), the pulse travels a longer <em>diagonal</em> path. But light's speed \(c\) is fixed for everyone — so a longer path must take longer. By Pythagoras on the diagonal:</p><div class="eq">\[ (ct)^2 = (ct_0)^2 + (vt)^2 \]</div></div></div>
+          <div class="step"><div class="sn">3</div><div class="sc"><p>Solve for the moving time \(t\):</p></div></div>
+          <div class="result"><span class="rl">Result</span><div class="eq">\[ t = \frac{t_0}{\sqrt{1 - v^2/c^2}} \]</div></div>
+          <div class="stepnote">Near light speed the denominator shrinks toward zero, so \(t\) balloons — time nearly stops.</div>
+        </div></details>
+        <details class="panel real"><summary><span class="ico">🌍</span> In the real world <span class="chev">›</span></summary><div class="body"><ul>
+          <li><b>GPS satellites.</b> Their fast-moving, high-altitude clocks drift relative to ours; without relativity corrections, GPS would be off by kilometres within a day.</li>
+          <li><b>Particle accelerators.</b> Short-lived particles live measurably longer when whizzing near light speed — time dilation seen daily.</li>
+          <li><b>Cosmic-ray muons.</b> They reach the ground only because their internal clocks run slow on the way down.</li>
+        </ul></div></details>
+        <div class="spark"><b>Curiosity spark.</b> Travel near light speed to a distant star and back, and you'd return to find your twin aged decades while you aged only years. Not science fiction — a tested, real consequence of these equations.</div>
+      </div>
+
+      <div style="text-align:center; margin-top:46px; padding:30px; border-top:1px solid var(--line);">
+        <p style="font-family:'Fraunces',serif; font-style:italic; font-size:1.3rem; color:var(--blue); margin:0;">"The most incomprehensible thing about the universe is that it is comprehensible."</p>
+        <p style="font-family:'Spline Sans Mono',monospace; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--rust); margin-top:10px;">— a sentiment often attributed to Einstein</p>
+        <p style="color:var(--ink-soft); max-width:560px; margin:20px auto 0; font-size:1.04rem;">Every formula in this book was once impossible, then mysterious, then obvious. The next ones are still out there, waiting for someone curious enough to ask why. Maybe you.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <b>Why the World Works</b> · a curious beginner's book of physics<br>
+    every formula is a story someone lived · keep asking why<br>
+    tip: open in any browser and press Ctrl/Cmd + P to save the whole book as a PDF
+  </footer>
+</div>
+
+<button id="toTop" aria-label="Back to top">↑</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // --- KaTeX ---
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left:"$$",right:"$$",display:true},
+      {left:"\\[",right:"\\]",display:true},
+      {left:"\\(",right:"\\)",display:false},
+      {left:"$",right:"$",display:false}
+    ],
+    throwOnError:false
+  });
+
+  // --- Reading depth control ---
+  const depthBtns = document.querySelectorAll(".depth button");
+  function applyDepth(mode){
+    document.querySelectorAll(".concept").forEach(c=>{
+      const story = c.querySelector("details.story");
+      const real  = c.querySelector("details.real");
+      const deriv = c.querySelector("details.deriv");
+      const set=(el,open)=>{ if(el){ if(open) el.setAttribute("open",""); else el.removeAttribute("open"); } };
+      if(mode==="essentials"){ set(story,false); set(real,false); set(deriv,false); }
+      else if(mode==="curious"){ set(story,true); set(real,true); set(deriv,false); }
+      else { set(story,true); set(real,true); set(deriv,true); }
+    });
+  }
+  depthBtns.forEach(b=>b.addEventListener("click",()=>{
+    depthBtns.forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    applyDepth(b.dataset.depth);
+  }));
+  applyDepth("curious");
+
+  // --- Search filter ---
+  const box = document.getElementById("searchBox");
+  box.addEventListener("input",()=>{
+    const q = box.value.trim().toLowerCase();
+    document.querySelectorAll("section.chapter").forEach(ch=>{
+      let anyVisible=false;
+      const chapText = ch.querySelector(".chap-head").textContent.toLowerCase();
+      ch.querySelectorAll(".concept").forEach(c=>{
+        const match = !q || c.textContent.toLowerCase().includes(q) || chapText.includes(q);
+        c.classList.toggle("hidden",!match);
+        if(match) anyVisible=true;
+      });
+      ch.classList.toggle("hidden", !anyVisible && !!q);
+    });
+  });
+
+  // --- Active TOC highlight + progress bar ---
+  const links = Array.from(document.querySelectorAll("nav.toc a"));
+  const map = {};
+  links.forEach(a=>{ const id=a.getAttribute("href").slice(1); map[id]=a; });
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove("active"));
+        const a=map[e.target.id]; if(a){ a.classList.add("active"); }
+      }
+    });
+  },{rootMargin:"-15% 0px -75% 0px"});
+  document.querySelectorAll("section.chapter").forEach(s=>obs.observe(s));
+
+  const bar=document.getElementById("progBar");
+  const toTop=document.getElementById("toTop");
+  window.addEventListener("scroll",()=>{
+    const h=document.documentElement;
+    const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+    bar.style.width=pct+"%";
+    toTop.classList.toggle("show", h.scrollTop>600);
+  });
+  toTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+});
+</script>
+</body>
+</html>
