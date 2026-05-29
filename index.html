@@ -308,8 +308,14 @@
   }
   #toTop.show{opacity:1; pointer-events:auto;}
 
-  footer{
+  /*footer{
     grid-column:1 / -1; text-align:center; margin-top:50px; padding-top:32px;
+    border-top:3px double var(--blue);
+    font-family:"Spline Sans Mono",monospace; font-size:.74rem; letter-spacing:.08em; color:var(--ink-soft); line-height:1.8;
+  }*/
+  footer{
+    grid-column: 2 / 3; /* Aligns footer under the main content, avoiding the TOC */
+    text-align:center; margin-top:50px; padding-top:32px;
     border-top:3px double var(--blue);
     font-family:"Spline Sans Mono",monospace; font-size:.74rem; letter-spacing:.08em; color:var(--ink-soft); line-height:1.8;
   }
@@ -317,6 +323,7 @@
 
   @media (max-width:920px){
     .wrap{grid-template-columns:1fr; gap:0;}
+    footer { grid-column: 1 / -1; }
     nav.toc{position:static; max-height:none; margin-bottom:40px; background:var(--paper-2); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
     .chap-intro{padding-left:0;}
   }
@@ -1218,6 +1225,7 @@
   <footer>
     <b>Why the World Works</b> · a curious beginner's book of physics<br>
     every formula is a story someone lived · keep asking why<br>
+        built by <a href="https://vanshcodeworks.com" target="_blank" style="color:var(--blue); text-decoration:none; font-weight:600;">vanshcodeworks.com</a> · <a href="https://github.com/vanshcodeworks/WhyTheWorld" target="_blank" style="color:var(--rust); text-decoration:none; font-weight:600;">⭐ Star this repo</a><br>
     tip: open in any browser and press Ctrl/Cmd + P to save the whole book as a PDF
   </footer>
 </div>
